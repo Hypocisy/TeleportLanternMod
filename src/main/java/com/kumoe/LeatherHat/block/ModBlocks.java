@@ -1,7 +1,7 @@
 package com.kumoe.LeatherHat.block;
 
 import com.kumoe.LeatherHat.LeatherMod;
-import com.kumoe.LeatherHat.block.custom.TeleportBlock;
+import com.kumoe.LeatherHat.block.custom.tpLantern;
 import com.kumoe.LeatherHat.items.ModItems;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -20,7 +20,7 @@ public class ModBlocks {
     public static final DeferredRegister<Block> BLOCKS =
             DeferredRegister.create(ForgeRegistries.BLOCKS, LeatherMod.MODID);
 
-    public static final RegistryObject<TeleportBlock> TELEPORT_BLOCK = registerBlock("teleport_block", () -> new TeleportBlock(BlockBehaviour.Properties.copy(Blocks.DIAMOND_BLOCK)));
+    public static final RegistryObject<tpLantern> TELEPORT_BLOCK = registerBlock("tp_lantern", () -> new tpLantern(BlockBehaviour.Properties.copy(Blocks.SEA_LANTERN)));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);

@@ -3,56 +3,53 @@ package com.kumoe.LeatherHat.block.entity;
 import com.kumoe.LeatherHat.api.ITeleportData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.UUID;
+import static net.minecraft.world.level.block.entity.BeaconBlockEntity.playSound;
 
 public class TeleportBlockEntity extends BlockEntity implements ITeleportData {
-    private UUID uid;
-    private Component menuName;
-    private int waitTime;
-    private BlockPos teleportBePos;
-    private BlockPos targetPos;
+    private int waitTime = 150;
+    private BlockPos targetPos = this.getBlockPos().above();
+    private BlockPos blockPos = this.getBlockPos();
+    private boolean active = false;
 
     public TeleportBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.TELEPORT_BE.get(), pPos, pBlockState);
     }
 
-    public TeleportBlockEntity(BlockPos pPos, BlockState pBlockState, FriendlyByteBuf buf) {
-        super(ModBlockEntities.TELEPORT_BE.get(), pPos, pBlockState);
-        this.uid = buf.readUUID();
-        this.menuName = buf.readComponent();
-        this.waitTime = buf.readInt();
-        this.targetPos = buf.readBlockPos();
-    }
-
     @Override
     public void load(CompoundTag pTag) {
-        this.uid = pTag.getUUID("uid");
-        this.waitTime = pTag.getInt("wait_time");
-        this.teleportBePos = BlockPos.of(pTag.getLong("teleport_be_pos"));
-        this.targetPos = BlockPos.of(pTag.getLong("target_pos"));
-        this.menuName = Component.nullToEmpty(pTag.getString("menu_name"));
-
+        active = pTag.getBoolean("teleport_be.active");
+        waitTime = pTag.getInt("teleport_be.wait_time");
+        blockPos = BlockPos.of(pTag.getLong("teleport_be.target_pos"));
+        blockPos = BlockPos.of(pTag.getLong("teleport_be.block_pos"));
         super.load(pTag);
     }
 
     @Override
     protected void saveAdditional(CompoundTag pTag) {
-        pTag.putUUID("uid", this.uid);
-        pTag.putInt("wait_time", this.waitTime);
-        pTag.putLong("teleport_be_pos", this.teleportBePos.asLong());
-        pTag.putLong("target_pos", this.targetPos.asLong());
-        pTag.putString("menu_name", this.menuName.getString());
-
+        pTag.putBoolean("teleport_be.active", active);
+        pTag.putInt("teleport_be.wait_time", waitTime);
+        pTag.putLong("teleport_be.target_pos", targetPos.asLong());
+        pTag.putLong("teleport_be.block_pos", blockPos.asLong());
         super.saveAdditional(pTag);
+    }
+
+    @Override
+    public BlockPos getTargetPos() {
+        return this.targetPos;
     }
 
     public void setTargetPos(BlockPos targetPos) {
         this.targetPos = targetPos;
+        this.setChanged();
+    }
+
+    @Override
+    public BlockPos getTeleportBePos() {
+        return this.getBlockPos();
     }
 
     @Override
@@ -62,30 +59,22 @@ public class TeleportBlockEntity extends BlockEntity implements ITeleportData {
 
     public void setWaitTime(int waitTime) {
         this.waitTime = waitTime;
-    }
-
-
-    public void setMenuName(Component menuName) {
-        this.menuName = menuName;
+        this.setChanged();
     }
 
     @Override
-    public BlockPos getTeleportBePos() {
-        return super.getBlockPos();
+    public void setRemoved() {
+        if (this.level != null) {
+            playSound(this.level, this.worldPosition, SoundEvents.BEACON_DEACTIVATE);
+        }
+        super.setRemoved();
     }
 
-    @Override
-    public BlockPos getTargetPos() {
-        return this.targetPos;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
-    @Override
-    public UUID getUid() {
-        return this.uid;
-    }
-
-    @Override
-    public Component getMenuName() {
-        return this.menuName;
+    public boolean getActive() {
+        return active;
     }
 }
