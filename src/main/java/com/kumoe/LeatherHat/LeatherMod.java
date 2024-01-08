@@ -7,7 +7,9 @@ import com.kumoe.LeatherHat.command.ModEventSubscriber;
 import com.kumoe.LeatherHat.config.LeatherConfig;
 import com.kumoe.LeatherHat.items.ModItems;
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -22,8 +24,6 @@ public class LeatherMod {
     public static final String MODID = "leather_mod";
 
     public static final Logger LOGGER = LogUtils.getLogger();
-    public static ForgeConfigSpec.Builder builder;
-    public static LeatherConfig.Common config;
 
     public LeatherMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();

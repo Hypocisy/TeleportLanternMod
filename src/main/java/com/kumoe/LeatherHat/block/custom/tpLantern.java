@@ -37,15 +37,18 @@ public class tpLantern extends Block implements EntityBlock {
 
     @Override
     public void stepOn(Level pLevel, BlockPos pPos, BlockState pState, Entity pEntity) {
-
-        if (pEntity instanceof Player player) {
-            if (pLevel.getBlockEntity(pPos) instanceof TeleportBlockEntity entity) {
-                waitTime++;
-                if (waitTime >= entity.getWaitTime()) {
+        if (!pLevel.isClientSide && pEntity instanceof Player player && pLevel.getBlockEntity(pPos) instanceof TeleportBlockEntity entity) {
+            waitTime++;
+            if (waitTime % 20 == 0) {
+                if (waitTime != 0) {
+                    player.sendSystemMessage(Component.translatable("block.leather_mod.teleport_block.dont_move", (entity.getWaitTime() - waitTime) / 20 + 1, entity.getTargetPos().getX(), entity.getTargetPos().getY(), entity.getTargetPos().getZ()).withStyle(ChatFormatting.DARK_AQUA));
+                }
+                if (waitTime > entity.getWaitTime()) {
                     targetPos = entity.getTargetPos();
                     if (targetPos != null && entity.getActive()) {
                         player.teleportTo(targetPos.getX(), targetPos.getY(), targetPos.getZ());
-                        player.sendSystemMessage(Component.translatable("command.leather.teleport.success", player.getDisplayName(), player.getLevel().dimension().location().getNamespace() + ":" + player.getLevel().dimension().location().getPath(), targetPos.getX(), targetPos.getY(), targetPos.getZ()));
+                        playSound(pLevel, pPos, SoundEvents.FOX_TELEPORT);
+                        player.sendSystemMessage(Component.translatable("block.leather_mod.teleport.success", player.getDisplayName(), player.getLevel().dimension().location().getNamespace() + ":" + player.getLevel().dimension().location().getPath(), targetPos.getX(), targetPos.getY(), targetPos.getZ()).withStyle(ChatFormatting.GREEN));
                         waitTime = 0;
                     }
                 }

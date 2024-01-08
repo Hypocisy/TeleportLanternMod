@@ -2,7 +2,6 @@ package com.kumoe.LeatherHat.items.custom;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.kumoe.LeatherHat.items.ColorfulHat;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -11,7 +10,10 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 public class UseLessHat extends DyeableArmorItem implements DyeableLeatherItem {
     public static final List<ColorfulHat> HATS = new ArrayList<>();
@@ -51,5 +53,10 @@ public class UseLessHat extends DyeableArmorItem implements DyeableLeatherItem {
                 stacks.add(hat.toStack());
             }
         }
+    }
+
+    @Override
+    public boolean canBeDepleted() {
+        return false;
     }
 }

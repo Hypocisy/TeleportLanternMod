@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import static net.minecraft.world.level.block.entity.BeaconBlockEntity.playSound;
 
 public class TeleportBlockEntity extends BlockEntity implements ITeleportData {
-    private int waitTime = 150;
+    private int waitTime = 120;
     private BlockPos targetPos = this.getBlockPos().above();
     private BlockPos blockPos = this.getBlockPos();
     private boolean active = false;
@@ -23,7 +23,7 @@ public class TeleportBlockEntity extends BlockEntity implements ITeleportData {
     public void load(CompoundTag pTag) {
         active = pTag.getBoolean("teleport_be.active");
         waitTime = pTag.getInt("teleport_be.wait_time");
-        blockPos = BlockPos.of(pTag.getLong("teleport_be.target_pos"));
+        targetPos = BlockPos.of(pTag.getLong("teleport_be.target_pos"));
         blockPos = BlockPos.of(pTag.getLong("teleport_be.block_pos"));
         super.load(pTag);
     }
